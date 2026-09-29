@@ -43,6 +43,6 @@ public class Queen extends Piece {
 
     @Override
     public List<Move> pseudoLegalMoves(Board board, Position from) {
-        throw new UnsupportedOperationException("M2: implement Queen.pseudoLegalMoves");
+        return slidingMoves(board, from, DIRECTIONS);
     }
 }
