@@ -38,6 +38,30 @@ public class Board {
         return positions;
     }
 
+    public void apply(Move move) {
+        place(move.from(), null);
+
+        Piece piece = move.moved();
+
+        if (move.promotesTo() != null) {
+            // avoids depending on factory, but repeats the creation logic
+            piece = switch (move.promotesTo()) {
+                case QUEEN -> new Queen(move.moved().color());
+                case ROOK -> new Rook(move.moved().color());
+                case BISHOP -> new Bishop(move.moved().color());
+                case KNIGHT -> new Knight(move.moved().color());
+                default -> throw new IllegalArgumentException("Invalid promotion type");
+            };
+        }
+
+        place(move.to(), piece);
+    }
+
+    public void undo(Move move) {
+        place(move.from(), move.moved());
+        place(move.to(), move.captured());
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
