@@ -26,6 +26,9 @@ import java.util.List;
  * <p>Nothing outside the {@code engine} package needs this class. The view and
  * {@code Main} talk to {@link Game}, which decides what "legal" means. That is
  * why one of the two methods below has no access modifier.
+ *
+ * <p>M5 update: legal moves now use the king-safety filter. The new helpers
+ * detect attacks and check without storing any state.
  */
 public final class MoveGenerator {
 
@@ -39,9 +42,59 @@ public final class MoveGenerator {
      * and the right geometry. M5 adds the one global rule, king safety, here
      * and only here. {@code Game.legalMoves()} calls this and does not change
      * when it tightens.
+     *
+     * <p>Every trial move is undone before the next candidate is checked,
+     * leaving the caller's board exactly as it was.
      */
     public static List<Move> legalMoves(Board board, Color color) {
-        return pseudoLegalMoves(board, color);
+        List<Move> moves = new ArrayList<>();
+
+        for (Move move : pseudoLegalMoves(board, color)) {
+            board.apply(move);
+            boolean inCheck;
+
+            try {
+                inCheck = isInCheck(board, color);
+            } finally {
+                board.undo(move);
+            }
+
+            if (!inCheck) {
+                moves.add(move);
+            }
+        }
+
+        return moves;
+    }
+
+    /**
+     * Returns whether {@code attacker} has a piece that attacks {@code target}.
+     *
+     * <p>Asks each piece's attack rule, so pawn attacks are checked diagonally
+     * rather than using the squares a pawn can move forward to.
+     */
+    public static boolean isAttacked(
+            Board board, Position target, Color attacker) {
+
+        for (Position from : board.positionsOf(attacker)) {
+            if (board.pieceAt(from).attacks(board, from, target)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether {@code color}'s king is attacked by the other side.
+     *
+     * <p>A side with no king on the board is not in check.
+     */
+    public static boolean isInCheck(Board board, Color color) {
+        Position king = board.kingPosition(color);
+
+        return king != null
+                && isAttacked(board, king, color.opposite());
     }
 
     /**
@@ -59,7 +112,8 @@ public final class MoveGenerator {
         List<Move> moves = new ArrayList<>();
 
         for (Position from : board.positionsOf(color)) {
-            moves.addAll(board.pieceAt(from).pseudoLegalMoves(board, from));
+            moves.addAll(
+                    board.pieceAt(from).pseudoLegalMoves(board, from));
         }
 
         return moves;
