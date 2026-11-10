@@ -98,6 +98,21 @@ public final class MoveGenerator {
     }
 
     /**
+     * Determines the status from check and the availability of legal moves.
+     * Leaves the board unchanged.
+     */
+    public static GameStatus status(Board board, Color sideToMove) {
+        boolean inCheck = isInCheck(board, sideToMove);
+        boolean hasLegalMoves = !legalMoves(board, sideToMove).isEmpty();
+
+        if (hasLegalMoves) {
+            return inCheck ? GameStatus.CHECK : GameStatus.IN_PROGRESS;
+        }
+
+        return inCheck ? GameStatus.CHECKMATE : GameStatus.STALEMATE;
+    }
+
+    /**
      * Every geometrically possible move for {@code color}, king safety aside.
      *
      * <p>This is the loop from session 6 §3 and M3's {@code Game.legalMoves()},

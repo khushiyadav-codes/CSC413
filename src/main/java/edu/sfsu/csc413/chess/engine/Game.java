@@ -74,6 +74,16 @@ public class Game {
         return MoveGenerator.legalMoves(board, sideToMove);
     }
 
+    /** Returns the current status by asking the move generator. */
+    public GameStatus status() {
+        return MoveGenerator.status(board, sideToMove);
+    }
+
+    /** Returns whether the current status ends the game. */
+    public boolean isGameOver() {
+        return status().isGameOver();
+    }
+
     /**
      * Finds the legal move matching notation such as {@code "e2e4"} or
      * {@code "e7e8q"}, if there is one.
