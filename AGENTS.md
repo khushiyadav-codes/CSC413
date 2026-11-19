@@ -1,94 +1,102 @@
-\# M7 Agent Instructions
+\# Instructions for coding agents
 
 
 
-This is my Java chess project ! Help me add new views without
+This is a chess engine built with MVC. The model and controller are
 
-changing the existing game logic.
-
-
-
-&#x20;What you can change
+finished. Your job is to add views.
 
 
 
-\- Add new classes in edu.sfsu.csc413.chess.view.
-
-\- Add view tests in src/test/java/edu/sfsu/csc413/chess/view.
-
-\- Update Main.java so I can choose the new views.
-
-\- Update AGENTS.md, CLAUDE.md, and m7-submission.md.
+\## Do
 
 
 
-What you should leave alone
+\- Add views as new classes in src/main/java/edu/sfsu/csc413/chess/view/
+
+&#x20; or a new package under it.
+
+\- Implement BoardView. Read BoardView, ConsoleView, and PlayerAction
+
+&#x20; before writing anything.
+
+\- Read the game through Game: board(), sideToMove(), legalMoves(),
+
+&#x20; status(), and history().
+
+\- Send player actions to the controller as PlayerAction objects.
+
+&#x20; For example: controller.handle(new PlayerAction.Move("e2e4")).
+
+\- Update the view selection in Main.main so the new views can be
+
+&#x20; chosen from the command line. This project has no chooseView method.
+
+\- Use clear names and short methods so I can understand the code.
 
 
 
-\- Do not change model/, engine/, or factory/.
-
-\- Do not change GameController.
-
-\- Do not change BoardView, PlayerAction, ConsoleView, or EmojiView.
-
-\- Leave the other existing view files alone too.
-
-\- Do not change pom.xml or add dependencies.
-
-\- Do not edit or delete existing tests.
-
-\- Only use the JDK.
+\## Don't
 
 
 
-How the views should work
+\- Don't change anything in model/, engine/, or factory/.
+
+\- Don't change BoardView, PlayerAction, GameController,
+
+&#x20; ConsoleView, or EmojiView.
+
+\- Don't change other existing view files.
+
+\- Don't call game.play(), game.undoLastMove(), or anything that
+
+&#x20; changes the game. Only the controller changes the game.
+
+\- Don't work out chess rules in the view. Legal moves come from
+
+&#x20; game.legalMoves(). Check, checkmate, and stalemate come from
+
+&#x20; game.status().
+
+\- Don't wait for the next move inside the window. A window's start()
+
+&#x20; builds the window and returns. It never calls controller.runLoop().
+
+&#x20; A modal dialog that asks one question, such as which promotion
+
+&#x20; piece to use, is allowed.
+
+\- Don't change pom.xml or add dependencies. Use only the JDK.
+
+\- Don't edit or delete existing tests.
 
 
 
-\- Send player actions to GameController.handle().
-
-\- The Undo button should send new PlayerAction.Undo().
-
-\- Do not call game.play(), undoLastMove(), or change the board directly.
-
-\- Use game.legalMoves() to get legal moves.
-
-\- Use game.status() to find out about check, checkmate, and stalemate.
-
-\- Keep the selected square in the view.
-
-\- Swing start() should create the window and return.
-
-\- Do not call controller.runLoop() from Swing.
-
-\- Start the Swing game on the event dispatch thread.
-
-\- Remember that render() and showMessage() can be called before start().
-
-\- Use labels for messages. Do not use modal dialogs in this version.
-
-\- Use BoardView's default queen promotion.
-
-\- Keep the final board and result visible after the game ends.
-
-\- Use clear names and short methods so I can follow the code.
+\## Check your work
 
 
 
-&#x20;Checking the work
+\- Run ./mvnw test, or .\\mvnw.cmd test on Windows.
+
+\- The existing tests must still pass.
+
+\- Check git status and the diff. Changes should only include new
+
+&#x20; view files, new view tests, Main.java, and the M7 documentation
+
+&#x20; allowed by the handout.
+
+\- Test Fool's Mate, an illegal move, and Undo.
+
+\- Report what you actually checked and anything you could not test.
 
 
 
-\- Run the tests and tell me the results.
+\## Stop and ask
 
-\- Check that only the allowed files changed.
 
-\- Check Fool's Mate, an illegal move, and Undo.
 
-\- Tell me if something could not be tested.
+If you think a protected file needs changing, stop and explain why
 
-\- If you think a protected file needs changing, stop and explain why.
-
-\- If a protected file seems to need changes, stop and explain why.
+instead of changing it.
 
