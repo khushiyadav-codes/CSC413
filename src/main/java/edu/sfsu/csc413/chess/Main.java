@@ -5,6 +5,11 @@ import edu.sfsu.csc413.chess.view.BoardView;
 import edu.sfsu.csc413.chess.view.ConsoleView;
 import edu.sfsu.csc413.chess.view.EmojiView;
 import edu.sfsu.csc413.chess.view.GameController;
+import edu.sfsu.csc413.chess.view.RotatingView;
+import edu.sfsu.csc413.chess.view.SwingView;
+
+import java.util.Locale;
+import javax.swing.SwingUtilities;
 
 /**
  * Entry point.
@@ -17,12 +22,20 @@ public final class Main {
     public static void main(String[] args) {
         Game game = new Game();
 
-        BoardView view = args.length > 0 && args[0].equalsIgnoreCase("emoji")
-                ? new EmojiView()
-                : new ConsoleView();
+        String choice = args.length == 0 ? "console" : args[0].toLowerCase(Locale.ROOT);
+        BoardView view = switch (choice) {
+            case "swing" -> new SwingView();
+            case "rotating" -> new RotatingView();
+            case "emoji" -> new EmojiView();
+            default -> new ConsoleView();
+        };
 
         GameController controller = new GameController(game, view);
-        controller.start();
+        if (view instanceof SwingView) {
+            SwingUtilities.invokeLater(controller::start);
+        } else {
+            controller.start();
+        }
     }
 
     private Main() {
