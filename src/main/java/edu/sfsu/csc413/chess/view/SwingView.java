@@ -266,6 +266,16 @@ public final class SwingView implements BoardView {
                 : " — " + piece.color()
                 + " " + piece.type());
 
+        if (position.equals(selected)) {
+            Set<Position> legalSquares = new java.util.HashSet<>();
+            for (Move move : game.legalMoves()) {
+                if (move.from().equals(position)) {
+                    legalSquares.add(move.to());
+                }
+            }
+            description += " — " + legalSquares.size()
+                    + " legal destinations";
+        }
         square.setToolTipText(description);
         square.getAccessibleContext()
                 .setAccessibleName(description);
