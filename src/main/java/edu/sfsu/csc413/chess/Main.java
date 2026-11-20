@@ -5,24 +5,31 @@ import edu.sfsu.csc413.chess.view.BoardView;
 import edu.sfsu.csc413.chess.view.ConsoleView;
 import edu.sfsu.csc413.chess.view.EmojiView;
 import edu.sfsu.csc413.chess.view.GameController;
+import edu.sfsu.csc413.chess.view.SwingView;
+import edu.sfsu.csc413.chess.view.TurnView;
 
-/**
- * Entry point.
- *
- * <p>At M0 this does nothing but prove the toolchain works. It grows into the
- * real launcher as the engine appears underneath it.
- */
+import javax.swing.SwingUtilities;
+import java.util.Locale;
+
 public final class Main {
-
     public static void main(String[] args) {
-        Game game = new Game();
+        String choice = args.length == 0
+                ? "console"
+                : args[0].toLowerCase(Locale.ROOT);
 
-        BoardView view = args.length > 0 && args[0].equalsIgnoreCase("emoji")
-                ? new EmojiView()
-                : new ConsoleView();
+        if (choice.equals("swing")) {
+            SwingUtilities.invokeLater(() ->
+                    new GameController(new Game(), new SwingView()).start());
+            return;
+        }
 
-        GameController controller = new GameController(game, view);
-        controller.start();
+        BoardView view = switch (choice) {
+            case "turn" -> new TurnView();
+            case "emoji" -> new EmojiView();
+            default -> new ConsoleView();
+        };
+
+        new GameController(new Game(), view).start();
     }
 
     private Main() {
