@@ -34,6 +34,8 @@ finished. Your job is to add views.
 
 \- Use clear names and short methods so I can understand the code.
 
+\- In the Swing view, show the selected square and its number of legal destination squares in a status label.
+
 
 
 \## Don't
@@ -69,6 +71,10 @@ finished. Your job is to add views.
 \- Don't change pom.xml or add dependencies. Use only the JDK.
 
 \- Don't edit or delete existing tests.
+
+\- Don't write the word runLoop anywhere in the Swing view, even in a
+
+&#x20; comment. The M7 check searches for it and expects no matches.
 
 
 
