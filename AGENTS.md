@@ -70,6 +70,10 @@ finished. Your job is to add views.
 
 \- Don't edit or delete existing tests.
 
+\- Don't write the word runLoop anywhere in the Swing view, even in a
+
+&#x20; comment. The M7 check searches for it and expects no matches.
+
 
 
 \## Check your work
