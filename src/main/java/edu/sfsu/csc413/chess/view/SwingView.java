@@ -19,10 +19,8 @@ import java.util.stream.Collectors;
 
 /** A click-driven board. Only the controller carries out player actions. */
 public final class SwingView implements BoardView {
-
     private static final Color LIGHT = new Color(240, 226, 199);
     private static final Color DARK = new Color(151, 175, 152);
-
     private static final Border NORMAL =
             BorderFactory.createEmptyBorder(4, 4, 4, 4);
 
@@ -37,6 +35,7 @@ public final class SwingView implements BoardView {
     private JLabel gameStatus;
     private JLabel selectionStatus;
     private JLabel messageLabel;
+    private JTextArea moveHistory;
 
     private String message =
             "Click a piece, then its destination. Promotion chooses a queen.";
@@ -64,10 +63,7 @@ public final class SwingView implements BoardView {
         });
     }
 
-    /**
-     * Builds controls for a window or a headless test.
-     * Call on the Swing event thread.
-     */
+    /** Builds controls on the Swing event thread. */
     JPanel createContent(GameController controller) {
         this.controller = controller;
         game = controller.game();
@@ -92,6 +88,7 @@ public final class SwingView implements BoardView {
 
         content.add(labels, BorderLayout.NORTH);
         content.add(createBoard(), BorderLayout.CENTER);
+        content.add(createHistoryPanel(), BorderLayout.EAST);
 
         JButton undo = new JButton("Undo");
         undo.setName("undo");
@@ -128,6 +125,46 @@ public final class SwingView implements BoardView {
         }
 
         return board;
+    }
+
+    private JScrollPane createHistoryPanel() {
+        moveHistory = new JTextArea(20, 19);
+        moveHistory.setName("moveHistory");
+        moveHistory.setEditable(false);
+        moveHistory.setFont(
+                new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        moveHistory.setMargin(
+                new java.awt.Insets(8, 8, 8, 8));
+
+        JScrollPane scroll = new JScrollPane(moveHistory);
+        scroll.setBorder(
+                BorderFactory.createTitledBorder("Move history"));
+
+        return scroll;
+    }
+
+    private void updateHistory() {
+        StringBuilder text = new StringBuilder();
+        int number = 1;
+
+        for (Move move : game.history()) {
+            text.append(number++)
+                    .append(". ")
+                    .append(move.moved().color())
+                    .append("  ")
+                    .append(move)
+                    .append('\n');
+        }
+
+        String historyText = text.isEmpty()
+                ? "No moves yet."
+                : text.toString();
+
+        if (!historyText.equals(moveHistory.getText())) {
+            moveHistory.setText(historyText);
+            moveHistory.setCaretPosition(
+                    moveHistory.getDocument().getLength());
+        }
     }
 
     private void click(Position position) {
@@ -202,6 +239,8 @@ public final class SwingView implements BoardView {
                         destinations.contains(position));
             }
         }
+
+        updateHistory();
     }
 
     private void drawSquare(
